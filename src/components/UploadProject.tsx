@@ -97,14 +97,14 @@ export function UploadProject({ addProject: onAddProject }: UploadProjectProps) 
         imageUrl = url || "";
       }
 
-      const projectData: Project = {
-         title: form.title.trim(),
-        category: form.category,
-        description: form.description.trim() || "No description added.",
-        link: form.link.trim() || "https://example.com",
-        image_url: imageUrl,
-        date: new Date().toISOString(),
-      };
+        const projectData: Project = {
+            title: form.title.trim(),
+            category: form.category,
+            description: form.description.trim() || "No description added.",
+            link: form.link.trim() || "https://example.com",
+            image_url: imageUrl,
+            date: new Date().toISOString(),
+        };
 
       const { project, error: dbError } = await dbAddProject(projectData);
 
@@ -118,13 +118,13 @@ export function UploadProject({ addProject: onAddProject }: UploadProjectProps) 
         setSuccess("Project uploaded successfully!");
 
         onAddProject({
-          ...project,
-          title: project.title || projectData.title,
-          category: project.category || projectData.category,
-          description: project.description || projectData.description,
-          link: project.link || projectData.link,
-          image_url: project.image_url || imageUrl,
-          date: project.date,
+        ...project,
+        title: project.title || projectData.title,
+        category: project.category || projectData.category,
+        description: project.description || projectData.description,
+        link: project.link || projectData.link,
+        image_url: project.image_url || imageUrl,
+        date: project.date || projectData.date,
         });
 
         setForm({
