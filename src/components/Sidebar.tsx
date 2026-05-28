@@ -1,5 +1,3 @@
-import React from "react";
-
 interface SidebarProps {
   page: string;
   setPage: (page: string) => void;

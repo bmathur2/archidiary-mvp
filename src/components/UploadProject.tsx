@@ -98,11 +98,12 @@ export function UploadProject({ addProject: onAddProject }: UploadProjectProps) 
       }
 
       const projectData: Project = {
-        title: form.title.trim(),
+         title: form.title.trim(),
         category: form.category,
         description: form.description.trim() || "No description added.",
         link: form.link.trim() || "https://example.com",
         image_url: imageUrl,
+        date: new Date().toISOString(),
       };
 
       const { project, error: dbError } = await dbAddProject(projectData);
