@@ -1,14 +1,4 @@
-import React from "react";
-
-interface Project {
-  id?: string;
-  title: string;
-  category: string;
-  description: string;
-  link: string;
-  image_url?: string;
-  date?: string;
-}
+import type { Project } from "../lib/database";
 
 interface PreviewProjectProps {
   project: Project | null;
@@ -51,27 +41,43 @@ export function PreviewProject({ project, setPage }: PreviewProjectProps) {
       </div>
 
       <div className="preview-card">
-        <div className="preview-hero">
-          <span className="align-left">Project Category: {project.category}</span>
-          <h2>{project.title}</h2>
-          <p>{project.description}</p>
-          <p><strong>Category : </strong> {project.category || "N/A"}</p>
-          <p><strong>Upload Date : </strong> {project.date || "N/A"}</p>
-          <p><strong>Project Link : </strong> {project.link ? (
-              <a href={project.link} target="_blank" rel="noreferrer">
-                {project.link}
-              </a>
-            ) : (
-              <span>N/A</span>
-            )}</p>
-        </div>
-
         <div className="preview-image-box">
           {project.image_url ? (
             <img src={project.image_url} alt={project.title} />
           ) : (
             <div className="preview-no-image">No Image Available</div>
           )}
+        </div>
+
+        <div className="preview-hero">
+          <span className="align-left">
+            Project Category: {project.category || "N/A"}
+          </span>
+
+          <h2>{project.title}</h2>
+
+          <p>{project.description}</p>
+
+          <p>
+            <strong>Category: </strong>
+            {project.category || "N/A"}
+          </p>
+
+          <p>
+            <strong>Upload Date: </strong>
+            {project.date || "N/A"}
+          </p>
+
+          <p>
+            <strong>Project Link: </strong>
+            {project.link ? (
+              <a href={project.link} target="_blank" rel="noreferrer">
+                {project.link}
+              </a>
+            ) : (
+              <span>N/A</span>
+            )}
+          </p>
         </div>
       </div>
     </section>

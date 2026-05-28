@@ -179,15 +179,13 @@ async function getUserProfile(
 // ==================== Projects ====================
 
 export interface Project {
-  date: string | undefined;
   id?: string;
   title: string;
   category: string;
   description: string;
   link: string;
   image_url?: string;
-  created_at?: string;
-  user_id?: string;
+  date?: string;
 }
 
 export async function uploadImage(file: File, userId: string): Promise<{

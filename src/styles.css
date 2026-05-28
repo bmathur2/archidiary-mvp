@@ -343,9 +343,11 @@ button.secondary-btn.btn-delete {
 
 .preview-card {
   overflow: hidden;
-  display: flex;
-  flex-direction: row;
-  padding: 2rem;
+    display: flex;
+    flex-direction: row;
+    padding: 1.5rem;
+    border-radius: 6px;
+    gap: 1.5rem;
 }
 
 .preview-hero {
@@ -582,10 +584,10 @@ button.secondary-btn.btn-delete {
 }
 
 .preview-image-box {
-  width: auto;
-  max-height: 400px;
-  overflow: hidden;
-  text-align: right;
+  width: 100%;
+    max-height: 400px;
+    text-align: left;
+    max-width: 400px;
 }
 
 .preview-image-box img {
@@ -603,4 +605,29 @@ button.secondary-btn.btn-delete {
     outline: none;
     border: 0;
     border-radius: 6px;
+}
+
+
+.upload-image-preview {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.upload-image-preview img {
+  max-width: 200px;
+  height: auto;
+  border-radius: 8px;
+  display: block;
+}
+
+.form-error {
+  color: #dc2626;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.form-success {
+  color: #059669;
+  font-size: 14px;
+  margin-top: 10px;
 }
