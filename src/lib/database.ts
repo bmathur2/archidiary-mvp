@@ -128,24 +128,24 @@ export async function resetPassword(email: string): Promise<{
 
 // ==================== User Profile ====================
 
-async function createUserProfile(
-  userId: string,
-  email: string,
-  fullName: string
-): Promise<void> {
-  try {
-    await supabase.from("profiles").insert([
-      {
-        id: userId,
-        email,
-        full_name: fullName,
-        created_at: new Date().toISOString(),
-      },
-    ]);
-  } catch (error) {
-    console.error("Error creating user profile:", error);
-  }
-}
+// async function createUserProfile(
+//   userId: string,
+//   email: string,
+//   fullName: string
+// ): Promise<void> {
+//   try {
+//     await supabase.from("profiles").insert([
+//       {
+//         id: userId,
+//         email,
+//         full_name: fullName,
+//         created_at: new Date().toISOString(),
+//       },
+//     ]);
+//   } catch (error) {
+//     console.error("Error creating user profile:", error);
+//   }
+// }
 
 async function getUserProfile(
   userId: string
