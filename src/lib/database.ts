@@ -16,42 +16,31 @@ export interface AuthResponse {
 export async function signUp(
   email: string,
   password: string,
-  name: string
-): Promise<AuthResponse> {
-  try {
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: name },
+  name: string,
+  phone?: string,
+  profession?: string
+) {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: name,
+        name: name,
+        phone: phone || "",
+        job_title: profession || "",
       },
-    });
+    },
+  });
 
-    if (authError) {
-      return { user: null, error: authError.message };
-    }
-
-    if (authData.user) {
-      // Create user profile in users table
-      await createUserProfile(authData.user.id, email, name);
-    }
-
-    return {
-      user: authData.user
-        ? {
-            id: authData.user.id,
-            email: authData.user.email || "",
-            name,
-          }
-        : null,
-      error: null,
-    };
-  } catch (error) {
-    return {
-      user: null,
-      error: error instanceof Error ? error.message : "Sign up failed",
-    };
+  if (error) {
+    return { user: null, error: error.message };
   }
+
+  return {
+    user: data.user,
+    error: null,
+  };
 }
 
 export async function signIn(
@@ -145,7 +134,7 @@ async function createUserProfile(
   fullName: string
 ): Promise<void> {
   try {
-    await supabase.from("users").insert([
+    await supabase.from("profiles").insert([
       {
         id: userId,
         email,
@@ -163,7 +152,7 @@ async function getUserProfile(
 ): Promise<{ full_name?: string } | null> {
   try {
     const { data, error } = await supabase
-      .from("users")
+      .from("profiles")
       .select("full_name")
       .eq("id", userId)
       .single();

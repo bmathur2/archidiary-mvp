@@ -87,19 +87,12 @@ export function Dashboard({
   };
 
   return (
-    <section>
+    <section className="page-container">
       <div className="page-header">
         <div>
           <h1>Hello, {user.name}</h1>
           <p>Welcome to your project management area.</p>
         </div>
-
-        <button
-          className="primary-btn small"
-          onClick={() => setPage("upload")}
-        >
-          Upload New Project
-        </button>
       </div>
 
       <div className="stats-grid">

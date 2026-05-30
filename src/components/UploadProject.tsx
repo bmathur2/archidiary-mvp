@@ -145,81 +145,91 @@ export function UploadProject({ addProject: onAddProject }: UploadProjectProps) 
   };
 
   return (
-    <section>
-      <div className="page-header">
-        <div>
-          <h1>Upload Project</h1>
-          <p>Add project information and preview it instantly.</p>
-        </div>
+    <section className="upload-form">
+      <div className="popup-header">
+        <h2>Upload Project</h2>
+        <p>Add project information and preview it instantly.</p>
       </div>
 
-      <div className="content-card form-card">
+      <div className="">
         <form onSubmit={handleSubmit}>
-          <label>Category</label>
+          <div className="form-row">
+            <div className="form-col">
+              <label>Category</label>
+              <select
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                disabled={loading}
+              >
+                <option value="">Select Project Category</option>
+                <option value="Project">Project</option>
+                <option value="Product">Product</option>
+                <option value="Article">Article</option>
+                <option value="Competition / Award / Scholarship / Fellowship">
+                  Competition / Award / Scholarship / Fellowship
+                </option>
+                <option value="News / Announcement">News / Announcement</option>
+                <option value="Publication">Publication</option>
+                <option value="Offer a Workshop">Offer a Workshop</option>
+                <option value="ArchiDiaries Jobs">ArchiDiaries Jobs</option>
+                <option value="Academic Studio">Academic Studio</option>
+                <option value="Academic Project">Academic Project</option>
+                <option value="Event">Event</option>
+              </select>
+            </div>
+            <div className="form-col">
+              <label>Project Title</label>
+              <input
+                name="title"
+                type="text"
+                placeholder="Website redesign"
+                value={form.title}
+                onChange={handleChange}
+                disabled={loading}
+              />
+            </div>
+          </div>
 
-          <select
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-            disabled={loading}
-          >
-            <option value="">Select Project Category</option>
-            <option value="Project">Project</option>
-            <option value="Product">Product</option>
-            <option value="Article">Article</option>
-            <option value="Competition / Award / Scholarship / Fellowship">
-              Competition / Award / Scholarship / Fellowship
-            </option>
-            <option value="News / Announcement">News / Announcement</option>
-            <option value="Publication">Publication</option>
-            <option value="Offer a Workshop">Offer a Workshop</option>
-            <option value="ArchiDiaries Jobs">ArchiDiaries Jobs</option>
-            <option value="Academic Studio">Academic Studio</option>
-            <option value="Academic Project">Academic Project</option>
-            <option value="Event">Event</option>
-          </select>
+           <div className="form-row">
+               <div className="form-col">
+                <label>Project Link</label>
+                <input
+                  name="link"
+                  type="url"
+                  placeholder="https://example.com"
+                  value={form.link}
+                  onChange={handleChange}
+                  disabled={loading}
+                />
+              </div>
+           </div>
+         
+          <div className="form-row">
+            <div className="form-col">
+            <label>Description</label>
+              <textarea
+                name="description"
+                rows={5}
+                placeholder="Write short project description"
+                value={form.description}
+                onChange={handleChange}
+                disabled={loading}
+              />
+            </div>
+          </div>
 
-          <label>Project Title</label>
-
-          <input
-            name="title"
-            type="text"
-            placeholder="Website redesign"
-            value={form.title}
-            onChange={handleChange}
-            disabled={loading}
-          />
-
-          <label>Project Link</label>
-
-          <input
-            name="link"
-            type="url"
-            placeholder="https://example.com"
-            value={form.link}
-            onChange={handleChange}
-            disabled={loading}
-          />
-
-          <label>Description</label>
-
-          <textarea
-            name="description"
-            rows={5}
-            placeholder="Write short project description"
-            value={form.description}
-            onChange={handleChange}
-            disabled={loading}
-          />
-
-          <label>Project Image Optional</label>
-
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            disabled={loading}
-          />
+           <div className="form-row">
+            <div className="form-col">
+              <label>Project Image Optional</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                disabled={loading}
+              />
+              </div>
+          </div>
 
           {imagePreview && (
             <div className="upload-image-preview">
