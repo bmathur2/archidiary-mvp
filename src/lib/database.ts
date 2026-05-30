@@ -146,7 +146,6 @@ export async function resetPassword(email: string): Promise<{
 //     console.error("Error creating user profile:", error);
 //   }
 // }
-
 async function getUserProfile(
   userId: string
 ): Promise<{ full_name?: string } | null> {
