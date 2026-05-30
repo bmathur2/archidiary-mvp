@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./styles.css";
 import { supabase } from "./lib/supabaseClient";
 import { Sidebar } from "./components/Sidebar";
+import MyProfile from "./components/MyProfile";
+import ChangePassword from "./components/ChangePassword";
 import { Login } from "./components/Login";
 import { Register } from "./components/Register";
 import { ForgotPassword } from "./components/ForgotPassword";
@@ -27,6 +29,8 @@ interface Project {
 export default function App() {
   const [page, setPage] = useState("login");
   const [user, setUser] = useState<User | null>(null);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement | null>(null);
 
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -82,7 +86,29 @@ export default function App() {
     };
   }, []);
 
-  const handleSetPage = (nextPage: string) => {
+  useEffect(() => {
+    if (!showProfileMenu) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+        setShowProfileMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showProfileMenu]);
+
+  const handleSetPage = (
+    nextPage: string,
+    options?: { clearSelectedProject?: boolean }
+  ) => {
+    if (nextPage === "preview" && options?.clearSelectedProject) {
+      setSelectedProject(null);
+    }
+
     setPage(nextPage);
 
     if (nextPage === "login") {
@@ -111,6 +137,14 @@ export default function App() {
 
     if (nextPage === "preview") {
       window.history.pushState({}, "", "/preview-project");
+    }
+
+    if (nextPage === "profile") {
+      window.history.pushState({}, "", "/profile");
+    }
+
+    if (nextPage === "change-password") {
+      window.history.pushState({}, "", "/change-password");
     }
   };
 
@@ -144,6 +178,74 @@ export default function App() {
       )}
 
       <main className={isAuthPage ? "auth-main" : "main"}>
+        {!isAuthPage && (
+          <div className="top-bar">
+            <div />
+            <div className="profile-menu" ref={profileMenuRef}>
+              <button
+                className="profile-menu-toggle"
+                type="button"
+                onClick={() => setShowProfileMenu((prev) => !prev)}
+              >
+                {user?.name || "Profile"}
+                <span className="profile-arrow">▾</span>
+              </button>
+              {showProfileMenu && (
+                <div className="profile-dropdown">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleSetPage("profile");
+                      setShowProfileMenu(false);
+                    }}
+                  >
+                    <span className="nav-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M4 21v-2a4 4 0 0 1 3-3.87" />
+                        <circle cx="12" cy="7" r="4" />
+                      </svg>
+                    </span>
+                    My Profile
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleSetPage("change-password");
+                      setShowProfileMenu(false);
+                    }}
+                  >
+                    <span className="nav-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 11a4 4 0 0 1 4 4v1" />
+                        <path d="M6 16v-1a4 4 0 0 1 4-4" />
+                        <path d="M8 19h8" />
+                        <path d="M16 19v-2" />
+                      </svg>
+                    </span>
+                    Change Password
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleLogout();
+                      setShowProfileMenu(false);
+                    }}
+                  >
+                    <span className="nav-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M16 17l5-5-5-5" />
+                        <path d="M21 12H9" />
+                        <path d="M5 19h6a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5" />
+                      </svg>
+                    </span>
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
         {page === "login" && (
           <Login setPage={handleSetPage} setUser={setUser} />
         )}
@@ -166,10 +268,19 @@ export default function App() {
           />
         )}
 
+        {page === "profile" && user && (
+          <MyProfile user={user} setUser={(u) => setUser({ ...user, name: u.name })} />
+        )}
+
+        {page === "change-password" && <ChangePassword />}
+
         {page === "upload" && <UploadProject addProject={addProject} />}
 
         {page === "preview" && (
-          <PreviewProject project={selectedProject} setPage={handleSetPage} />
+          <PreviewProject
+            project={selectedProject}
+            projects={projects}
+          />
         )}
       </main>
     </div>
