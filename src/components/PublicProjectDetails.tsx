@@ -76,6 +76,9 @@ export function PublicProjectDetails({
       </header>
 
       <section className="project-details-container">
+
+       <div className="project-heading"> 
+        <h1>Project Details</h1>
         <button
           type="button"
           className="back-projects-btn"
@@ -83,6 +86,7 @@ export function PublicProjectDetails({
         >
           ← Back to Projects
         </button>
+        </div>
 
         {loading && <p className="status-message">Loading project details...</p>}
 
@@ -107,7 +111,7 @@ export function PublicProjectDetails({
                 {project.category || "Other"}
               </span>
 
-              <h1>{project.title}</h1>
+              <h2>{project.title}</h2>
 
               {project.created_at && (
                 <p className="project-date">
