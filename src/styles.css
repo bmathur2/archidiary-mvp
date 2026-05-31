@@ -1019,7 +1019,7 @@ section.upload-form {
 
 .projects-list-section {  
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 0 40px 0;
 }
 
 .projects-grid {
@@ -1226,6 +1226,7 @@ section.upload-form {
   width: 100%;
   background: #fffefb;
   box-shadow: 1px 2px 1px #ddd;
+  padding: 0 20px;
 }
 
 .site-header-inner {
@@ -1420,8 +1421,18 @@ section.upload-form {
 }
 
 .project-details-container {
-  max-width: 1180px;
-  margin: 0 auto;
+    width: 100%;
+    max-width: 1680px;
+    margin: 0 auto 0px;
+    padding: 0 20px;
+}
+.project-details-container h1 {
+    letter-spacing: -.04em;
+    text-align: left;
+    color: #ea9c2a;
+    margin: 0 0 0px;
+    font-size: 32px;
+    line-height: 1.1;
 }
 
 .back-projects-btn {
@@ -1465,6 +1476,7 @@ section.upload-form {
 
 .project-details-content {
   padding: 42px;
+  text-align: left;
 }
 
 .project-details-content h1 {
@@ -1556,4 +1568,11 @@ section.upload-form {
   .secondary-project-btn {
     width: 100%;
   }
+}
+.project-heading {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
