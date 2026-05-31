@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabaseClient";
 
 interface PublicProjectsProps {
   setPage: (page: string) => void;
+  onViewProject: (projectId: string) => void;
 }
 
 interface Project {
@@ -25,7 +26,7 @@ const categories = [
   "Other",
 ];
 
-export function PublicProjects({ setPage }: PublicProjectsProps) {
+export function PublicProjects({ setPage, onViewProject }: PublicProjectsProps) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [activeCategory, setActiveCategory] = useState("All");
   const [loading, setLoading] = useState(true);
@@ -154,14 +155,13 @@ export function PublicProjects({ setPage }: PublicProjectsProps) {
                       </p>
 
                       {project.link ? (
-                        <a
-                          href={project.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                       <button
+                          type="button"
                           className="view-project-btn"
+                          onClick={() => onViewProject(project.id)}
                         >
-                          View Project
-                        </a>
+                          View Details
+                        </button>
                       ) : (
                         <button
                           type="button"

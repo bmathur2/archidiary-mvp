@@ -12,6 +12,7 @@ import { UploadProject } from "./components/UploadProject";
 import { PreviewProject } from "./components/PreviewProject";
 import ResetPassword from "./components/ResetPassword";
 import { PublicProjects } from "./components/PublicProjects";
+import { PublicProjectDetails } from "./components/PublicProjectDetails";
 import { AuthHeader } from "./components/AuthHeader";
 
 interface User {
@@ -37,11 +38,18 @@ export default function App() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
+  const [selectedPublicProjectId, setSelectedPublicProjectId] =
+    useState<string | null>(null);
+
   useEffect(() => {
     const path = window.location.pathname;
 
     if (path === "/" || path === "/projects") {
       setPage("public-projects");
+    } else if (path.startsWith("/projects/")) {
+      const id = path.replace("/projects/", "");
+      setSelectedPublicProjectId(id);
+      setPage("public-project-details");
     } else if (path === "/register") {
       setPage("register");
     } else if (path === "/login") {
@@ -155,6 +163,10 @@ export default function App() {
       window.history.pushState({}, "", "/");
     }
 
+    if (nextPage === "public-project-details") {
+      window.history.pushState({}, "", "/projects");
+    }
+
     if (nextPage === "login") {
       window.history.pushState({}, "", "/login");
     }
@@ -209,13 +221,20 @@ export default function App() {
     handleSetPage("preview");
   };
 
+  const goToPublicProjectDetails = (projectId: string) => {
+    setSelectedPublicProjectId(projectId);
+    setPage("public-project-details");
+    window.history.pushState({}, "", `/projects/${projectId}`);
+  };
+
   const isAuthPage =
     page === "login" ||
     page === "register" ||
     page === "forgot" ||
     page === "reset";
 
-  const isPublicPage = page === "public-projects";
+  const isPublicPage =
+    page === "public-projects" || page === "public-project-details";
 
   const showSidebar = !isAuthPage && !isPublicPage;
 
@@ -339,7 +358,17 @@ export default function App() {
         )}
 
         {page === "public-projects" && (
-          <PublicProjects setPage={handleSetPage} />
+          <PublicProjects
+            setPage={handleSetPage}
+            onViewProject={goToPublicProjectDetails}
+          />
+        )}
+
+        {page === "public-project-details" && (
+          <PublicProjectDetails
+            projectId={selectedPublicProjectId}
+            setPage={handleSetPage}
+          />
         )}
 
         {page === "login" && (
