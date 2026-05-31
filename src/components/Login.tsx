@@ -33,6 +33,7 @@ export function Login({ setPage, setUser }: LoginProps) {
   };
 
   return (
+    
     <section className="auth-card">
     <div className="brand-logo">
         <img src="/logo.png" alt="Archidiary Logo" />
