@@ -1168,6 +1168,7 @@ section.upload-form {
   width: 100%;
   max-width: 1680px;
   margin: 0 auto 0px;
+  padding: 0 20px;
 }
 .public-header {
     background: #fffefb;   
