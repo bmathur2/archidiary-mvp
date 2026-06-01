@@ -1577,3 +1577,25 @@ section.upload-form {
     justify-content: space-between;
     align-items: center;
 }
+
+.public-top-bar {
+  justify-content: flex-end;
+  padding: 16px 28px;
+  background: transparent;
+  border-bottom: 0;
+}
+
+.public-user-menu-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.public-user-menu-wrap .profile-menu {
+  position: relative;
+}
+
+.public-user-menu-wrap .profile-menu-toggle {
+  min-width: 180px;
+  justify-content: center;
+}

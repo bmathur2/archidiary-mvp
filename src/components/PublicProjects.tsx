@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 
 interface PublicProjectsProps {
+  user: { id?: string; name: string; email: string } | null;
   setPage: (page: string) => void;
   onViewProject: (projectId: string) => void;
+  userMenu?: React.ReactNode;
 }
 
 interface Project {
@@ -26,7 +28,12 @@ const categories = [
   "Other",
 ];
 
-export function PublicProjects({ setPage, onViewProject }: PublicProjectsProps) {
+export function PublicProjects({
+  user,
+  setPage,
+  onViewProject,
+  userMenu,
+}: PublicProjectsProps) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [activeCategory, setActiveCategory] = useState("All");
   const [loading, setLoading] = useState(true);
@@ -73,19 +80,26 @@ export function PublicProjects({ setPage, onViewProject }: PublicProjectsProps) 
         <div className="container">
           <div className="public-header-inner">
             <div className="public-logo">
-              <span><img src="/logo.png" alt="Archidiary Logo" /></span>
+              <span>
+                <img src="/logo.png" alt="Archidiary Logo" />
+              </span>
             </div>
-            <button
-              type="button"
-              className="upload-project-btn"
-              onClick={() => setPage("register")}
-            >
-              Register for Submit Work
-            </button>
-            </div>
+
+            {user ? (
+              <div className="public-user-menu-wrap">{userMenu}</div>
+            ) : (
+              <button
+                type="button"
+                className="upload-project-btn"
+                onClick={() => setPage("register")}
+              >
+                Register for Submit Work
+              </button>
+            )}
+          </div>
         </div>
       </header>
-      
+
       <section className="projects-hero">
         <div className="container">
           <h1 className="align-left">Explore Architecture Projects</h1>
@@ -110,72 +124,68 @@ export function PublicProjects({ setPage, onViewProject }: PublicProjectsProps) 
       </section>
 
       <section className="projects-list-section">
-         <div className="container">
-            {loading && <p className="status-message">Loading projects...</p>}
+        <div className="container">
+          {loading && <p className="status-message">Loading projects...</p>}
 
-            {!loading && error && <p className="status-message error">{error}</p>}
+          {!loading && error && <p className="status-message error">{error}</p>}
 
-            {!loading && !error && filteredProjects.length === 0 && (
-              <p className="status-message">
-                No projects found in this category.
-              </p>
-            )}
+          {!loading && !error && filteredProjects.length === 0 && (
+            <p className="status-message">No projects found in this category.</p>
+          )}
 
-            {!loading && !error && filteredProjects.length > 0 && (
-              <div className="projects-grid">
-                {filteredProjects.map((project) => (
-                  <article className="project-card" key={project.id}>
-                    <div className="project-image-wrap">
-                      {project.image_url ? (
-                        <img
-                          src={project.image_url}
-                          alt={project.title}
-                          className="project-image"
-                        />
-                      ) : (
-                        <div className="project-placeholder">
-                          No Image Available
-                        </div>
-                      )}
-                    </div>
+          {!loading && !error && filteredProjects.length > 0 && (
+            <div className="projects-grid">
+              {filteredProjects.map((project) => (
+                <article className="project-card" key={project.id}>
+                  <div className="project-image-wrap">
+                    {project.image_url ? (
+                      <img
+                        src={project.image_url}
+                        alt={project.title}
+                        className="project-image"
+                      />
+                    ) : (
+                      <div className="project-placeholder">No Image Available</div>
+                    )}
+                  </div>
 
-                    <div className="project-content">
-                      <span className="project-category">
-                        {project.category || "Other"}
-                      </span>
+                  <div className="project-content">
+                    <span className="project-category">
+                      {project.category || "Other"}
+                    </span>
 
-                      <h2>{project.title}</h2>
+                    <h2>{project.title}</h2>
 
-                      <p>
-                        {project.description
-                          ? project.description.length > 120
-                            ? `${project.description.slice(0, 120)}...`
-                            : project.description
-                          : "No description available."}
-                      </p>
+                    <p>
+                      {project.description
+                        ? project.description.length > 120
+                          ? `${project.description.slice(0, 120)}...`
+                          : project.description
+                        : "No description available."}
+                    </p>
 
-                      {project.link ? (
-                       <button
-                          type="button"
-                          className="view-project-btn"
-                          onClick={() => onViewProject(project.id)}
-                        >
-                          View Details
-                        </button>
-                      ) : (
-                        <button
-                          type="button"
-                          className="view-project-btn disabled"
-                          disabled
-                        >
-                          No Link Available
-                        </button>
-                      )}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            )}
+                    {project.link ? (
+                      <button
+                        type="button"
+                        className="view-project-btn"
+                        onClick={() => onViewProject(project.id)}
+                      >
+                        View Details
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="view-project-btn disabled"
+                        disabled
+                      >
+                        No Link Available
+                      </button>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </main>

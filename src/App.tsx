@@ -41,6 +41,15 @@ export default function App() {
   const [selectedPublicProjectId, setSelectedPublicProjectId] =
     useState<string | null>(null);
 
+  const getUserName = (authUser: any) => {
+    return (
+      authUser.user_metadata?.full_name ||
+      authUser.user_metadata?.name ||
+      authUser.email?.split("@")[0] ||
+      "User"
+    );
+  };
+
   useEffect(() => {
     const path = window.location.pathname;
 
@@ -80,27 +89,8 @@ export default function App() {
         setUser({
           id: data.user.id,
           email: data.user.email || "",
-          name:
-            data.user.user_metadata?.name ||
-            data.user.email?.split("@")[0] ||
-            "User",
+          name: getUserName(data.user),
         });
-
-        if (path === "/dashboard") {
-          setPage("dashboard");
-        }
-
-        if (path === "/upload-project") {
-          setPage("upload");
-        }
-
-        if (path === "/profile") {
-          setPage("profile");
-        }
-
-        if (path === "/change-password") {
-          setPage("change-password");
-        }
       }
     };
 
@@ -113,13 +103,11 @@ export default function App() {
         setUser({
           id: session.user.id,
           email: session.user.email || "",
-          name:
-            session.user.user_metadata?.name ||
-            session.user.email?.split("@")[0] ||
-            "User",
+          name: getUserName(session.user),
         });
       } else {
         setUser(null);
+        setShowProfileMenu(false);
         setPage("public-projects");
         window.history.pushState({}, "", "/");
       }
@@ -158,6 +146,7 @@ export default function App() {
     }
 
     setPage(nextPage);
+    setShowProfileMenu(false);
 
     if (nextPage === "public-projects") {
       window.history.pushState({}, "", "/");
@@ -207,6 +196,7 @@ export default function App() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUser(null);
+    setShowProfileMenu(false);
     handleSetPage("public-projects");
   };
 
@@ -238,6 +228,138 @@ export default function App() {
 
   const showSidebar = !isAuthPage && !isPublicPage;
 
+  const renderUserMenu = () => {
+    if (!user) return null;
+
+    return (
+      <div className="profile-menu" ref={profileMenuRef}>
+        <button
+          className="profile-menu-toggle"
+          type="button"
+          onClick={() => setShowProfileMenu((prev) => !prev)}
+        >
+          {user.name || "Profile"}
+          <span className="profile-arrow">▾</span>
+        </button>
+
+        {showProfileMenu && (
+          <div className="profile-dropdown">
+            <button
+              type="button"
+              onClick={() => {
+                handleSetPage("dashboard");
+              }}
+            >
+              <span className="nav-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="14" y="14" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" />
+                </svg>
+              </span>
+              Admin Panel
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                handleSetPage("upload");
+              }}
+            >
+              <span className="nav-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M12 5v14" />
+                  <path d="M5 12h14" />
+                </svg>
+              </span>
+              Add Project
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                handleSetPage("profile");
+              }}
+            >
+              <span className="nav-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M4 21v-2a4 4 0 0 1 3-3.87" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </span>
+              My Profile
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                handleSetPage("change-password");
+              }}
+            >
+              <span className="nav-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M12 11a4 4 0 0 1 4 4v1" />
+                  <path d="M6 16v-1a4 4 0 0 1 4-4" />
+                  <path d="M8 19h8" />
+                  <path d="M16 19v-2" />
+                </svg>
+              </span>
+              Change Password
+            </button>
+
+            <button type="button" onClick={handleLogout}>
+              <span className="nav-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M16 17l5-5-5-5" />
+                  <path d="M21 12H9" />
+                  <path d="M5 19h6a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5" />
+                </svg>
+              </span>
+              Logout
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="app">
       {showSidebar && (
@@ -255,6 +377,12 @@ export default function App() {
       >
         {isAuthPage && <AuthHeader setPage={handleSetPage} />}
 
+        {/* {isPublicPage && user && (
+          <div className="top-bar public-top-bar">
+            <div className="top-bar-actions">{renderUserMenu()}</div>
+          </div>
+        )} */}
+
         {showSidebar && (
           <div className="top-bar">
             <div className="top-bar-actions">
@@ -266,101 +394,17 @@ export default function App() {
                 Back to Client Panel
               </button>
 
-              <div className="profile-menu" ref={profileMenuRef}>
-                <button
-                  className="profile-menu-toggle"
-                  type="button"
-                  onClick={() => setShowProfileMenu((prev) => !prev)}
-                >
-                  {user?.name || "Profile"}
-                  <span className="profile-arrow">▾</span>
-                </button>
-
-                {showProfileMenu && (
-                  <div className="profile-dropdown">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        handleSetPage("profile");
-                        setShowProfileMenu(false);
-                      }}
-                    >
-                      <span className="nav-icon">
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.8"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M20 21v-2a4 4 0 0 0-3-3.87" />
-                          <path d="M4 21v-2a4 4 0 0 1 3-3.87" />
-                          <circle cx="12" cy="7" r="4" />
-                        </svg>
-                      </span>
-                      My Profile
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        handleSetPage("change-password");
-                        setShowProfileMenu(false);
-                      }}
-                    >
-                      <span className="nav-icon">
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.8"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M12 11a4 4 0 0 1 4 4v1" />
-                          <path d="M6 16v-1a4 4 0 0 1 4-4" />
-                          <path d="M8 19h8" />
-                          <path d="M16 19v-2" />
-                        </svg>
-                      </span>
-                      Change Password
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        handleLogout();
-                        setShowProfileMenu(false);
-                      }}
-                    >
-                      <span className="nav-icon">
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.8"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M16 17l5-5-5-5" />
-                          <path d="M21 12H9" />
-                          <path d="M5 19h6a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5" />
-                        </svg>
-                      </span>
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
+              {renderUserMenu()}
             </div>
           </div>
         )}
 
         {page === "public-projects" && (
           <PublicProjects
+            user={user}
             setPage={handleSetPage}
             onViewProject={goToPublicProjectDetails}
+            userMenu={renderUserMenu()}
           />
         )}
 
@@ -396,7 +440,13 @@ export default function App() {
         {page === "profile" && user && (
           <MyProfile
             user={user}
-            setUser={(u) => setUser({ ...user, name: u.name })}
+            setUser={(u) =>
+              setUser({
+                id: u.id || user.id,
+                name: u.name,
+                email: u.email || user.email,
+              })
+            }
           />
         )}
 
