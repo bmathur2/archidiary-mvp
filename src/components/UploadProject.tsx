@@ -145,7 +145,7 @@ export function UploadProject({ addProject: onAddProject }: UploadProjectProps) 
   };
 
   return (
-    <section className="upload-form">
+    <section className="page-container">
       <div className="popup-header">
         <h2>Upload Project</h2>
         <p>Add project information and preview it instantly.</p>
